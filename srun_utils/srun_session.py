@@ -29,7 +29,6 @@ class SrunSession:
         work_folder = self.runs_dir / str(uuid.uuid4())
         work_folder.mkdir()
 
-        print('--mem', f'{self.mem}G')
         subprocess.run(
             [
                 'sbatch',
@@ -38,7 +37,7 @@ class SrunSession:
                 '-p', self.partition,
                 '-G', f'{self.n_gpus}',
                 '-c', f'{self.n_cpus}',
-                '--mem', f'{self.mem}G'
+                '--mem', f'{self.mem}G',
                 '--output=%j.stdout',
                 '--error=%j.stderr',
                 '--wrap',
