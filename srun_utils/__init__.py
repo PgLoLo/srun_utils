@@ -1,14 +1,12 @@
-from pathlib import Path
-
 from srun_utils.srun_session import SrunSession
 
 
 __all__ = ['SrunSession', 'srun', 'init']
 
 
-def init(runs_dir: str | Path, time: str, job_name: str) -> None:
+def init(*args, **kwargs) -> None:
     global SRUN_SESSION
-    SRUN_SESSION = SrunSession(runs_dir, time, job_name)
+    SRUN_SESSION = SrunSession(*args, **kwargs)
 
 
 def srun(command: str) -> None:
