@@ -4,9 +4,11 @@ from pathlib import Path
 
 
 class SrunSession:
-    def __init__(self, runs_dir: Path, time: str, job_name: str):
+    def __init__(self, runs_dir: str | Path, time: str, job_name: str):
+        runs_dir = Path(runs_dir).expanduser()
         assert runs_dir.exists(), f'Dirrectory with runs {runs_dir} does not exist'
-        self.runs_dir = Path(runs_dir)
+
+        self.runs_dir = runs_dir
         self.time = time
         self.job_name = job_name
 
