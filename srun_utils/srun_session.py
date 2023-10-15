@@ -29,6 +29,7 @@ class SrunSession:
         work_folder = self.runs_dir / str(uuid.uuid4())
         work_folder.mkdir()
 
+        print('--mem', f'{self.mem}G')
         subprocess.run(
             [
                 'sbatch',
