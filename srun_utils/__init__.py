@@ -20,7 +20,6 @@ def init(
     SRUN_SESSION = SrunSession(runs_dir, time, job_name, n_gpus, n_cpus, mem, partition, logs_dir)
 
 
-
-def srun(command: str) -> None:
+def srun(command: list[str], interactive: bool = False) -> None:
     global SRUN_SESSION
-    SRUN_SESSION.srun(command)
+    SRUN_SESSION.srun(command, interactive)

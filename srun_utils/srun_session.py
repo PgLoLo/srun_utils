@@ -32,26 +32,29 @@ class SrunSession:
         self.partition = partition
         self.logs_dir = logs_dir
 
-    def srun(self, command: str) -> None:
+    def srun(self, command: list[str], interactive: bool = False) -> None:
         work_folder = self.runs_dir / timestamp_str()
         work_folder.mkdir()
 
         log_dir = self.logs_dir if self.logs_dir is not None else work_folder
         log_dir = log_dir.absolute()
 
-        subprocess.run(
-            [
-                'sbatch',
-                f'--time={self.time}',
-                f'--job-name={self.job_name}',
-                '-p', self.partition,
-                '-G', f'{self.n_gpus}',
-                '-c', f'{self.n_cpus}',
-                '--mem', f'{self.mem}G',
+        commands = ['srun' if interactive else 'sbatch']
+        commands += [
+            f'--time={self.time}',
+            f'--job-name={self.job_name}',
+            '-p', self.partition,
+            '-G', f'{self.n_gpus}',
+            '-c', f'{self.n_cpus}',
+            '--mem', f'{self.mem}G',
+        ]
+        if not interactive:
+            commands += [
                 f'--output={log_dir}/%j.out',
                 f'--error={log_dir}/%j.err',
                 '--wrap',
-                command,
-            ],
-            cwd=work_folder,
-        )
+                ' '.join(command)
+            ]
+        else:
+            commands += ['--'] + command
+        subprocess.run(commands, cwd=work_folder)
