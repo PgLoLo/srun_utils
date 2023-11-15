@@ -31,9 +31,18 @@ class SshRunner:
             src_folder = self.rsync_to / timestamp_str()
             to_exclude = [f'--exclude={name}' for name in self.to_exclude]
             assert_ret_value(subprocess.run(['rsync', '-az', *to_exclude, f'{self.rsync_from}/', f'{self.host}:{src_folder}']))
-            assert_ret_value(subprocess.run([
-                'ssh', self.host, f"mamba activate {self.mamba_env}; export PYTHONPATH={src_folder}/; echo $PYTHONPATH; {command}"
-            ]))
+
+            ssh_process = subprocess.Popen(['ssh', self.host, 'bash', '--login'], stdin=subprocess.PIPE)
+            ssh_process.communicate(
+                f'mamba activate {self.mamba_env}\n'
+                f'export PYTHONPATH=$PYTHONPATH:{src_folder}/\n'
+                f'{command}\n'.encode()
+            )
+            assert_ret_value(ssh_process)
+
         finally:
             (self.rsync_from / 'git.commit.txt').unlink(missing_ok=True)
             (self.rsync_from / 'git.patch').unlink(missing_ok=True)
+
+
+# sbatch -p ais-gpu -G 1 -c 8 --mem 100G --output %j --wrap "mamba activate ml_run; python -c \"import os; os.system('which ldconfig')\""
