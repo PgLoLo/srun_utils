@@ -43,6 +43,3 @@ class SshRunner:
         finally:
             (self.rsync_from / 'git.commit.txt').unlink(missing_ok=True)
             (self.rsync_from / 'git.patch').unlink(missing_ok=True)
-
-
-# sbatch -p ais-gpu -G 1 -c 8 --mem 100G --output %j --wrap "mamba activate ml_run; python -c \"import os; os.system('which ldconfig')\""
