@@ -4,6 +4,10 @@ from pathlib import Path
 from srun_utils.utils import assert_ret_value, timestamp_str
 
 
+GIT_COMMIT_FILE = 'git.commit.txt'
+GIT_PATCH_FILE = 'git.patch'
+
+
 class SshRunner:
     def __init__(
         self, rsync_from: str | Path, rsync_to: str | Path, host: str, mamba_env: str, to_exclude: list[str],
@@ -23,9 +27,9 @@ class SshRunner:
     def run(self, command: str):
         try:
             assert_ret_value(subprocess.run(['git', 'add', '-A']))
-            with open(self.rsync_from / 'git.commit.txt', 'w') as f:
+            with open(self.rsync_from / GIT_COMMIT_FILE, 'w') as f:
                 assert_ret_value(subprocess.run(['git', 'rev-parse', 'HEAD'], stdout=f))
-            with open(self.rsync_from / 'git.patch', 'w') as f:
+            with open(self.rsync_from / GIT_PATCH_FILE, 'w') as f:
                 assert_ret_value(subprocess.run(['git', 'diff', '--cached'], stdout=f))
 
             src_folder = self.rsync_to / timestamp_str()
@@ -42,5 +46,5 @@ class SshRunner:
             assert_ret_value(ssh_process)
 
         finally:
-            (self.rsync_from / 'git.commit.txt').unlink(missing_ok=True)
-            (self.rsync_from / 'git.patch').unlink(missing_ok=True)
+            (self.rsync_from / GIT_COMMIT_FILE).unlink(missing_ok=True)
+            (self.rsync_from / GIT_PATCH_FILE).unlink(missing_ok=True)
