@@ -35,7 +35,7 @@ class SshRunner:
             src_folder = self.rsync_to / timestamp_str()
             to_exclude = [f'--exclude={name}' for name in self.to_exclude]
             assert_ret_value(subprocess.run(['rsync', '-az', *to_exclude, f'{self.rsync_from}/', f'{self.host}:{src_folder}']))
-            print(f'Source code sinced to: {src_folder}')
+            print(f'Source code synced to: {src_folder}')
 
             ssh_process = subprocess.Popen(['ssh', self.host, 'bash', '--login'], stdin=subprocess.PIPE)
             ssh_process.communicate(
