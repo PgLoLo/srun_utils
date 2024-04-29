@@ -7,6 +7,13 @@ from srun_utils.utils import assert_ret_value, timestamp_str
 GIT_COMMIT_FILE = 'git.commit.txt'
 GIT_PATCH_FILE = 'git.patch'
 
+DEFAULT_EXCLUDES = [
+    '.git',
+    '.idea',
+    '__pycache__',
+    '.ipynb_checkpoints',
+    '.hypothesis',
+]
 
 class SshRunner:
     def __init__(
@@ -22,7 +29,7 @@ class SshRunner:
         self.rsync_to = rsync_to
         self.host = host
         self.mamba_env = mamba_env
-        self.to_exclude = to_exclude
+        self.to_exclude = DEFAULT_EXCLUDES + to_exclude
 
     def run(self, command: str):
         try:
