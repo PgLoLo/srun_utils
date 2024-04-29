@@ -15,6 +15,7 @@ DEFAULT_EXCLUDES = [
     '.hypothesis',
 ]
 
+
 class SshRunner:
     def __init__(
         self, rsync_from: str | Path, rsync_to: str | Path, host: str, mamba_env: str, to_exclude: list[str],
