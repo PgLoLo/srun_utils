@@ -13,6 +13,7 @@ DEFAULT_EXCLUDES = [
     '__pycache__',
     '.ipynb_checkpoints',
     '.hypothesis',
+    '.pytest_cache',
 ]
 
 
